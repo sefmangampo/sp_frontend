@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import { Button } from "@mui/material";
 
 import styles from "./CreateProfile.module.css";
+import { FormActionTypes } from "../../data/formReducer";
 
 import FormItem from "../formItem/FormItem";
 import { UserContext } from "../../data";
@@ -29,7 +30,7 @@ export default function CreateProfile() {
           continue;
 
         userContext.formDispatch({
-          type: "HANDLE_FORM_ITEM",
+          type: FormActionTypes.HANDLE_FORM_ITEM,
           field: key,
           payload: item,
         });
@@ -40,11 +41,11 @@ export default function CreateProfile() {
   //pass the user id from global user state to form state
   useEffect(() => {
     userContext.formDispatch({
-      type: "SET_USER_ID",
+      type: FormActionTypes.SET_USER_ID,
       payload: userContext.userState.user_id,
     });
 
-    userContext.formDispatch({ type: "SET_STEP", payload: 0 });
+    userContext.formDispatch({ type: FormActionTypes.SET_STEP, payload: 0 });
 
     userDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,19 +66,19 @@ export default function CreateProfile() {
 
   //proceed to part 2 of form
   const nextStep = () => {
-    userContext.formDispatch({ type: "SET_STEP", payload: step + 1 });
+    userContext.formDispatch({ type: FormActionTypes.SET_STEP, payload: step + 1 });
   };
 
   //go back to first form
   const prevStep = () => {
-    userContext.formDispatch({ type: "SET_STEP", payload: step - 1 });
+    userContext.formDispatch({ type: FormActionTypes.SET_STEP, payload: step - 1 });
   };
 
   //multi handler for form items, so i won't need to create every one of them
-  const handleChange = (input) => {
+  const handleChange = (input: EventTarget | any) => {
     const { name, value } = input;
     userContext.formDispatch({
-      type: "HANDLE_FORM_ITEM",
+      type: FormActionTypes.HANDLE_FORM_ITEM,
       field: name,
       payload: value,
     });
@@ -104,12 +105,12 @@ export default function CreateProfile() {
         const errs = validate();
 
         if (errs.length > 0) {
-          userContext.formDispatch({ type: "SET_ERRORS", payload: errs });
+          userContext.formDispatch({ type: FormActionTypes.SET_ERRORS, payload: errs });
         } else {
           nextStep();
         }
       } else {
-        userContext.formDispatch({ type: "SET_ERRORS", payload: [] });
+        userContext.formDispatch({ type: FormActionTypes.SET_ERRORS, payload: [] });
         prevStep();
       }
     };
@@ -127,6 +128,8 @@ export default function CreateProfile() {
 
     const response = await createProfile(payload);
 
+    if (!response) return;
+
     if (response.status === 200) {
       userContext.showModal(
         "Success",
@@ -134,7 +137,7 @@ export default function CreateProfile() {
       );
       history.push("/");
     } else if (response.status === 422) {
-      const response_error = [];
+      const response_error: any = [];
       for (const key in response.data) {
         const err_array = response.data[key];
 

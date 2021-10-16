@@ -17,7 +17,13 @@ import {
 } from "./data";
 
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import { useReducer, useState, useEffect } from "react";
+import { useReducer, useState, useEffect, Dispatch } from "react";
+
+interface ModalControls {
+  visibilitySetter: Dispatch<boolean> | null;
+  titleSetter: Dispatch<string> | null;
+  bodySetter: Dispatch<string> | null;
+}
 
 function App() {
   // 2 reducers to be passed to the context provider
@@ -28,14 +34,14 @@ function App() {
 
   // dirty trick, I made the local usestate setters of modal be lifted to the context provider
   // i could have created another reducer but it's my first time to create my own modal
-  const [modalControls, setModalControls] = useState({
+  const [modalControls, setModalControls] = useState<ModalControls>({
     visibilitySetter: null,
     titleSetter: null,
-    bodySetter: null,
+    bodySetter: null
   });
 
   // the setters, become swallowed by another setter - so APP has control on the setters of modal
-  const modalSetters = (visible, title, body) => {
+  const modalSetters = (visible: Dispatch<boolean>, title: Dispatch<string>, body: Dispatch<string>) => {
     setModalControls({
       visibilitySetter: visible,
       titleSetter: title,
@@ -44,12 +50,11 @@ function App() {
   };
 
   // now app creates it's local function based on modals local setter the pass it to the context provider
-  const showModal = (title = "", body = "") => {
+  const showModal = (visible = true, title = "", body = "") => {
     const { visibilitySetter, titleSetter, bodySetter } = modalControls;
-
-    visibilitySetter(true);
-    titleSetter(title);
-    bodySetter(body);
+    if (visibilitySetter) visibilitySetter(visible);
+    if (titleSetter) titleSetter(title);
+    if (bodySetter) bodySetter(body);
   };
 
   // i use the 0 as flag for sign out
@@ -60,33 +65,33 @@ function App() {
 
   return (
     <BrowserRouter>
-    <UserContext.Provider
-        value= {{
-    userState: user,
-      userDispatch: userDispatch,
-        formState: form,
+      <UserContext.Provider
+        value={{
+          userState: user,
+          userDispatch: userDispatch,
+          formState: form,
           formDispatch: formDispatch,
-            showModal: showModal,
+          showModal: showModal,
         }
-}
+        }
       >
-  <Navigation modalController={ modalSetters } />
-    < Switch >
-    <Route path="/" exact >
-      <Welcome />
-      < /Route>
-      < Route path = "/register" >
-        { isLoggedIn?<Redirect to = "/" /> : <Registration />}
-          < /Route>
-          < Route path = "/create" >
-            { isLoggedIn?<Redirect to = "/" /> : <CreateProfile />}
-              < /Route>
-              < Route path = "/signin" >
-                { isLoggedIn?<Redirect to = "/" /> : <Signin />}
-                  < /Route>
-                  < /Switch>
-                  < /UserContext.Provider>
-                  < /BrowserRouter>
+        <Navigation modalController={modalSetters} />
+        < Switch >
+          <Route path="/" exact >
+            <Welcome />
+          </Route>
+          < Route path="/register" >
+            {isLoggedIn ? <Redirect to="/" /> : <Registration />}
+          </Route>
+          <Route path="/create" >
+            {isLoggedIn ? <Redirect to="/" /> : <CreateProfile />}
+          </Route>
+          <Route path="/signin" >
+            {isLoggedIn ? <Redirect to="/" /> : <Signin />}
+          </Route>
+        </Switch>
+      </UserContext.Provider>
+    </BrowserRouter>
   );
 }
 

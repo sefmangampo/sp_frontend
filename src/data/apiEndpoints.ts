@@ -20,7 +20,7 @@ const testRequest = async () => {
   }
 };
 
-const getUser = async (id: string) => {
+const getUser = async (id: string | number) => {
   try {
     const response = await axios.get(getUserURL + id).catch(function (error) {
       if (error.response) {

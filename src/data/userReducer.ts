@@ -3,25 +3,25 @@ interface InitialUserState {
   name: string
 }
 
-interface UserState {
+export interface UserState {
   user_id: number | string;
   name: string
 }
 
-enum UserActionTypes {
+export enum UserActionTypes {
   SET_ID = "SET_ID",
   SET_NAME = "SET_NAME",
   SIGN_OUT = "SIGN_OUT"
 }
 
-interface UserAction {
+export interface UserAction {
   type: UserActionTypes,
   payload?: number | string
 }
 
 const initialUserState: InitialUserState = { user_id: 0, name: "" };
 
-const userReducers = (state: UserState, action: UserAction) => {
+const userReducers = (state: UserState, action: UserAction): UserState | any => {
 
   const { type, payload } = action;
 
