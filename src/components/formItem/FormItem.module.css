@@ -1,0 +1,10 @@
+.formItem {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2em;
+}
+
+.errorMessage {
+    color: lightcoral;
+}

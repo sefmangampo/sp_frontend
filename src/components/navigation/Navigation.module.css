@@ -1,0 +1,107 @@
+.container {
+    color: white;
+}
+
+.nav {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: #444655;
+    height: 80px;
+}
+
+.links {
+    float: right;
+    padding: 0;
+    margin: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.links li {
+    list-style-type: none;
+}
+
+.links a {
+    display: block;
+    padding: 1em;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    text-decoration: none;
+}
+
+.navToggle{
+    position: absolute;
+    top: -100px;
+
+}
+
+.burgerLines{
+    display: none;
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    
+}
+
+.burgerLines .line {
+    width: 30px;
+    height: 5px;
+    background-color: #fff;
+    margin: 5px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 768px){
+    .links{
+        float:none;
+        position: fixed;
+        z-index: 9;
+        left: 0;
+        right: 0;
+        top: 80px;
+        bottom: 100%;
+        width: auto;
+        height: auto;
+        flex-direction: column;
+        background-color: rgba(0,0,0,1);
+        overflow: hidden;
+        justify-content: space-evenly;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .links a {
+        font-size: 20px;
+    }
+
+    .nav :checked ~ .links{
+        bottom: 0
+    }
+
+    .burgerLines{
+        display: block;
+    }
+
+    .nav :checked ~ .burgerLines .line:nth-child(1) {
+        transform: translateY(10px) rotate(225deg);
+    }
+
+    .nav :checked ~ .burgerLines .line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav :checked ~ .burgerLines .line:nth-child(3) {
+        transform: translateY(-10px) rotate(-225deg);
+    }
+
+
+ 
+}
