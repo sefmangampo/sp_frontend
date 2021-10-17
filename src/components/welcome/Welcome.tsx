@@ -24,7 +24,7 @@ export default function Welcome() {
       setDisplayName("Anonymous");
     } else {
 
-      if (name !== "") {
+      if (name !== undefined) {
         setDisplayName(`User: ${name}`);
       } else {
         setDisplayName(`Unamed user`);
