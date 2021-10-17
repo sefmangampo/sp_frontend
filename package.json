@@ -9,33 +9,6 @@
     "express": "^4.17.1"
   },
   "scripts": {
-    "start": "node index.js",
-    "start-react": "react-app-rewired start",
-    "nodemon": "nodemon index.js",
-    "build": "react-app-rewired build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "react-app-rewired": "^2.1.8",
-    "typings-for-css-modules-loader": "^1.7.0"
+    "start": "node index.js"
   }
 }
