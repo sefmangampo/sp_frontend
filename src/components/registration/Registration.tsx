@@ -1,10 +1,10 @@
-import { useState, useContext } from "react";
+import { useState, useContext, FormEvent } from "react";
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 import styles from "./Registration.module.css";
-import FormItem from "../formItem/FormItem";
-import { UserContext } from "../../data";
+import FormItem, { formItemError } from "../formItem/FormItem";
+import { UserContext, UserActionTypes, FormActionTypes } from "../../data";
 
 import { createUser } from "../../data/apiEndpoints";
 
@@ -15,9 +15,9 @@ export default function Registration() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confrimPW, setConfirmPW] = useState("");
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState<formItemError[]>();
 
-    const validate = () => {
+    const validate = (): formItemError[] => {
         const _errors = [];
 
         if (!email)
@@ -91,7 +91,7 @@ export default function Registration() {
         return _errors;
     };
 
-    const submitForm = async (e) => {
+    const submitForm = async (e: FormEvent) => {
         e.preventDefault();
         const errs = validate();
 
@@ -100,12 +100,18 @@ export default function Registration() {
             const response = await createUser(email, password);
             console.log("register", response);
 
+            if (!response) {
+                userContext.showModal("Error", "There was no response")
+                return;
+            }
+
             if (response.status === 200) {
                 const user_id = response.data.id;
                 console.log("user_id: ", user_id);
 
                 userContext.showModal("Success", "You have succesfully registered");
-                userContext.userDispatch({ type: "SET_ID", payload: user_id });
+                userContext.userDispatch({ type: UserActionTypes.SET_ID, payload: user_id });
+                userContext.formDispatch({ type: FormActionTypes.RESET_FORM })
                 history.push("/create");
             } else if (response.status === 422) {
 

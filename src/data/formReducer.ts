@@ -32,7 +32,8 @@ export enum FormActionTypes {
   SET_USER_ID = "SET_USER_ID",
   HANDLE_FORM_ITEM = "HANDLE_FORM_ITEM",
   SET_STEP = "SET_STEP",
-  SET_ERRORS = "SET_ERRORS"
+  SET_ERRORS = "SET_ERRORS",
+  RESET_FORM = "RESET_FORM"
 }
 
 export interface FormAction {
@@ -58,10 +59,14 @@ const formReducer = (state: FormState, action: FormAction): FormState | any => {
       return { ...state, step: payload };
     case "SET_ERRORS":
       return { ...state, errors: payload };
+    case "RESET_FORM":
+      return { ...initialFormState }
     default:
       return state;
   }
 };
+
+
 
 const initialFormState: InitialFormState = {
   user_id: "",

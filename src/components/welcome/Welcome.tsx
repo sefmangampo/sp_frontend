@@ -23,7 +23,13 @@ export default function Welcome() {
     if (user_id === 0) {
       setDisplayName("Anonymous");
     } else {
-      setDisplayName(`User: ${name}`);
+
+      if (name !== "") {
+        setDisplayName(`User: ${name}`);
+      } else {
+        setDisplayName(`Unamed user`);
+      }
+
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user_id]);

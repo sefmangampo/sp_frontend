@@ -3,8 +3,14 @@ import React from "react";
 import styles from "./Modal.module.css";
 import { Button } from "@mui/material";
 
-export default function Modal({ title = "Title", body = "Body", closeMe }) {
-  const closeHandler = () => {
+interface ModalParams {
+  title: string;
+  body: string;
+  closeMe?: any;
+}
+
+export default function Modal({ title = "Title", body = "Body", closeMe }: ModalParams) {
+  const closeHandler = (): void => {
     closeMe();
   };
 

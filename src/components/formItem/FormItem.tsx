@@ -2,15 +2,20 @@ import { TextField } from "@mui/material";
 
 import styles from "./FormItem.module.css";
 
-interface formItemProps {
+export interface formItemError {
+  item: string;
+  message: string;
+}
+
+export interface formItemProps {
   id: string,
   label: string,
   name: string,
   type?: string,
   value: string,
   setter: EventTarget | any,
-  errors?: any[] | [undefined],
-  multi: boolean
+  errors?: formItemError[],
+  multi?: boolean
 }
 
 export default function FormItem({
@@ -23,6 +28,7 @@ export default function FormItem({
   errors,
   multi = false,
 }: formItemProps) {
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (multi) {
       setter(e.target);
@@ -30,6 +36,7 @@ export default function FormItem({
       setter(e.target.value);
     }
   };
+
 
   return (
     <div className={styles.formItem} >
@@ -42,17 +49,16 @@ export default function FormItem({
         onChange={handleChange}
       />
 
-      {
-        errors?.map((error, key) => {
-          return error.item === name ? (
-            <div className={styles.errorMessage} key={`signin-${key}`
-            }>
-              {error.message}
-            </div>
-          ) : (
-            ""
-          );
-        })}
+      {errors?.map((error: formItemError, key: number) => {
+        return error.item === name ? (
+          <div className={styles.errorMessage} key={`signin-${key}`
+          }>
+            {error.message}
+          </div>
+        ) : (
+          ""
+        );
+      })}
     </div>
   );
 }

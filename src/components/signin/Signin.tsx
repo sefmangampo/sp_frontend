@@ -1,12 +1,17 @@
-import { useState, useContext } from "react";
+import { useState, useContext, FormEvent } from "react";
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
-import { UserContext } from "../../data";
+import { UserContext, UserActionTypes } from "../../data";
 import styles from "./SignIn.module.css";
-import FormItem from "../formItem/FormItem";
+import FormItem, { formItemError } from "../formItem/FormItem";
 import { signIn } from "../../data/apiEndpoints";
+
+interface SignInResponse {
+  email: string;
+  user_id: string;
+}
 
 export default function Signin() {
   //redirection
@@ -18,10 +23,10 @@ export default function Signin() {
   //local state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<formItemError[]>();
 
   //validation
-  const validate = () => {
+  const validate = (): formItemError[] => {
     const _errors = [];
 
     if (!email)
@@ -41,7 +46,7 @@ export default function Signin() {
   };
 
   //submit
-  const submitForm = async (e) => {
+  const submitForm = async (e: FormEvent) => {
     e.preventDefault();
 
     const errs = validate();
@@ -52,17 +57,22 @@ export default function Signin() {
       //  const response = await testRequest();
       const response = await signIn(email, password);
 
+      if (!response) {
+        userContext.showModal("Error", "There was no response")
+        return;
+      }
+
       if (response.status === 200) {
         const token = response.data.data;
 
-        const decoded = jwt_decode(token.auth_token);
+        const decoded: SignInResponse = jwt_decode(token.auth_token);
 
         userContext.showModal(
           "Success",
           `Here's your ID from the token: ${decoded.user_id}`
         );
-        userContext.userDispatch({ type: "SET_ID", payload: decoded.user_id });
-        userContext.userDispatch({ type: "SET_NAME", payload: token.email });
+        userContext.userDispatch({ type: UserActionTypes.SET_ID, payload: decoded.user_id });
+        userContext.userDispatch({ type: UserActionTypes.SET_NAME, payload: token.email });
         history.push("/");
       } else if (response.status === 401) {
         userContext.showModal("Invalid Creds", response.data);

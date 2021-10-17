@@ -1,5 +1,5 @@
-import { userReducers, initialUserState } from "./userReducer";
-import { formReducer, initialFormState } from "./formReducer";
+import { userReducers, initialUserState, UserActionTypes } from "./userReducer";
+import { formReducer, initialFormState, FormActionTypes } from "./formReducer";
 import { UserContext } from "./UserContext";
 
 export {
@@ -8,4 +8,6 @@ export {
   initialFormState,
   initialUserState,
   UserContext,
+  UserActionTypes,
+  FormActionTypes
 };

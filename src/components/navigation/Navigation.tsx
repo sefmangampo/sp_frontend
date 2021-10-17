@@ -1,13 +1,17 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, ChangeEventHandler } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import { UserContext } from "../../data";
+import { UserContext, UserActionTypes } from "../../data";
 import styles from "./Navigation.module.css";
 import Modal from "../modal/Modal";
 
+interface ModalController {
+  modalController: any
+}
+
 // modal controller props will fetch the local setters so parent can call them/ or give it to context provider
 //to make them globally accessible
-export default function Navigation({ modalController }) {
+export default function Navigation({ modalController }: ModalController) {
   const userContext = useContext(UserContext);
   const history = useHistory();
   const user_id = userContext.userState.user_id;
@@ -29,17 +33,21 @@ export default function Navigation({ modalController }) {
     setOpen(false);
   };
 
-  const onChangeHandler = (e) => {
-    setOpen(e.target.checked);
+  const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const target = e.target;
+
+    setOpen(target.checked);
+
+
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setShowModal(false);
   };
 
   //sign out action will just reset the global id to 0
   const handleSignOut = () => {
-    userContext.userDispatch({ type: "SIGN_OUT" });
+    userContext.userDispatch({ type: UserActionTypes.SIGN_OUT });
     history.push("/");
     closeNav();
   };

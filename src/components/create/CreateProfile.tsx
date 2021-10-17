@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import styles from "./CreateProfile.module.css";
 import { FormActionTypes } from "../../data/formReducer";
 
-import FormItem from "../formItem/FormItem";
+import FormItem, { formItemError } from "../formItem/FormItem";
 import { UserContext } from "../../data";
 import { getUser, createProfile } from "../../data/apiEndpoints";
 
@@ -15,14 +15,14 @@ export default function CreateProfile() {
 
   //contains global UserState, global FormState, and modal stuff
   const userContext = useContext(UserContext);
-  const [_errors, setErrors] = useState([]);
+  const [_errors, setErrors] = useState<formItemError[]>();
 
   const userDetails = async () => {
     const response = await getUser(userContext.userState.user_id);
 
     console.log("response", response);
 
-    if (response && response.data.profile) {
+    if (response && response.data) {
       for (const key in response.data.profile) {
         const item = response.data.profile[key];
 
@@ -61,7 +61,6 @@ export default function CreateProfile() {
     country,
     zip_code,
     step,
-    errors,
   } = userContext.formState; // deconstruct global form state for the form items
 
   //proceed to part 2 of form
@@ -126,6 +125,7 @@ export default function CreateProfile() {
     //remove the unecessary properties from the state
     const { errors, step, ...payload } = userContext.formState;
 
+    console.log("create profile payload: ", payload)
     const response = await createProfile(payload);
 
     if (!response) return;
@@ -219,7 +219,7 @@ export default function CreateProfile() {
                 name="address_2"
                 value={address_2}
                 setter={handleChange}
-                errors={errors}
+                errors={_errors}
                 multi={true}
               />
               <FormItem
